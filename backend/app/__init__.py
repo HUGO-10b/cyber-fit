@@ -23,6 +23,28 @@ def create_app(config_class=Config):
     app.register_blueprint(cardio_bp)
     app.register_blueprint(dashboard_bp)
 
+    @app.before_request
+    def check_private_access():
+        # Allow CORS preflight requests
+        from flask import request, jsonify
+        if request.method == "OPTIONS":
+            return
+        
+        # Check Authorization header on all /api/ endpoints
+        if request.path.startswith("/api/"):
+            auth_header = request.headers.get("Authorization", "")
+            api_key_header = request.headers.get("X-API-KEY", "")
+            expected_token = app.config.get("APP_SECRET_TOKEN", "")
+
+            valid_bearer = auth_header == f"Bearer {expected_token}"
+            valid_api_key = api_key_header == expected_token
+
+            if not (valid_bearer or valid_api_key):
+                return jsonify({
+                    "error": "Acceso Denegado // Servidor Privado Exclusivo.",
+                    "status": "unauthorized"
+                }), 401
+
     with app.app_context():
         db.create_all()
 

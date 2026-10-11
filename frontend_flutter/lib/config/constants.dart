@@ -9,9 +9,9 @@ class AppConstants {
   static const String wheyProductName = "Whey Pro (Universe Nutrition)";
   static const double maxWheyScoopsPerLiftingDay = 1.0;
 
-  // Network API Base URL
-  // Use 10.0.2.2 for Android Emulator, localhost for iOS simulator/desktop, or your LAN IP for physical device
+  // Network API Base URL & Token Privado
   static const String defaultBaseUrl = "http://10.0.2.2:5000";
+  static const String appSecretToken = "cyberfit-hugo-2026-secret";
 
   // Weekly Routines
   static const Map<int, String> dayRoutines = {

@@ -19,6 +19,8 @@ class ApiService {
       receiveTimeout: const Duration(seconds: 25),
       headers: {
         'Accept': 'application/json',
+        'Authorization': 'Bearer ${AppConstants.appSecretToken}',
+        'X-API-KEY': AppConstants.appSecretToken,
       },
     ));
   }

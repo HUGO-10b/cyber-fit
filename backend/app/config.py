@@ -11,6 +11,9 @@ class Config:
     # Gemini AI
     GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
     
+    # Seguridad Privada (Solo para ti)
+    APP_SECRET_TOKEN = os.getenv("APP_SECRET_TOKEN", "cyberfit-hugo-2026-secret")
+    
     # User Profile Constraints
     USER_HEIGHT_M = 1.71
     USER_WEIGHT_KG = 90.8
