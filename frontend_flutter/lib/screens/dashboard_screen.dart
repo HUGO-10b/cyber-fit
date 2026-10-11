@@ -43,9 +43,70 @@ class _DashboardScreenState extends State<DashboardScreen> {
       setState(() {
         _summary = _getDemoSummary();
         _isLoading = false;
-        _errorMessage = "Modo Demo Activo (Conectar Backend en ajustes si se desea sincronización remota).";
+        _errorMessage = "Modo Offline / Conexión no establecida con ${_apiService.currentBaseUrl}. Toca el engrane ⚙️ arriba para configurar tu IP.";
       });
     }
+  }
+
+  void _showServerConfigDialog() {
+    final urlCtrl = TextEditingController(text: _apiService.currentBaseUrl);
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: CyberpunkTheme.cardSurface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: const BorderSide(color: CyberpunkTheme.neonCyan),
+        ),
+        title: const Row(
+          children: [
+            Icon(Icons.dns, color: CyberpunkTheme.neonCyan, size: 20),
+            SizedBox(width: 8),
+            Text('IP DEL SERVIDOR', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Ingresa la IP de tu servidor Linux (o tu PC en la red local):',
+              style: TextStyle(color: CyberpunkTheme.textSecondary, fontSize: 12),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: urlCtrl,
+              style: const TextStyle(color: CyberpunkTheme.neonGreen, fontWeight: FontWeight.bold),
+              decoration: InputDecoration(
+                hintText: 'http://192.168.1.40:5000',
+                hintStyle: TextStyle(color: Colors.white.withOpacity(0.3)),
+                filled: true,
+                fillColor: CyberpunkTheme.cardSurfaceLight,
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancelar', style: TextStyle(color: CyberpunkTheme.textMuted)),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: CyberpunkTheme.neonCyan),
+            onPressed: () {
+              final newUrl = urlCtrl.text.trim();
+              if (newUrl.isNotEmpty) {
+                _apiService.updateBaseUrl(newUrl);
+                Navigator.pop(ctx);
+                _loadDashboard();
+              }
+            },
+            child: const Text('Guardar y Conectar', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+          ),
+        ],
+      ),
+    );
   }
 
   DashboardSummaryModel _getDemoSummary() {
@@ -119,6 +180,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ],
         ),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.settings_outlined, color: CyberpunkTheme.neonCyan),
+            tooltip: 'Configurar IP del Servidor',
+            onPressed: _showServerConfigDialog,
+          ),
           IconButton(
             icon: const Icon(Icons.refresh, color: CyberpunkTheme.neonGreen),
             onPressed: _loadDashboard,

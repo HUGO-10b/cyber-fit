@@ -17,11 +17,13 @@ def create_app(config_class=Config):
     from app.routes.workout import workout_bp
     from app.routes.cardio import cardio_bp
     from app.routes.dashboard import dashboard_bp
+    from app.routes.app_update import update_bp
 
     app.register_blueprint(nutrition_bp)
     app.register_blueprint(workout_bp)
     app.register_blueprint(cardio_bp)
     app.register_blueprint(dashboard_bp)
+    app.register_blueprint(update_bp)
 
     @app.before_request
     def check_private_access():
